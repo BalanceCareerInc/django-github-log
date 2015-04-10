@@ -16,7 +16,7 @@ class Request(models.Model):
     meta_json = models.TextField()
 
     @classmethod
-    def from_request(cls, request):
+    def create_from_request(cls, request):
         meta_dict = dict((k, v) for k, v in request.META.iteritems() if k.startswith('HTTP_'))
         return cls.objects.create(
             path=request.META['PATH_INFO'].split('?')[0],
@@ -32,15 +32,20 @@ class Signature(models.Model):
     file_name = models.CharField(max_length=255)
     line = models.CharField(max_length=255)
 
+    def __repr__(self):
+        return '<Signature: "%s">' % self.make_string(self.file_name, self.line)
+
+    @staticmethod
+    def make_string(file_name, line):
+        return '%s#%s' % (file_name, line)
+
     @classmethod
-    def from_frame(cls, error_frame):
+    def get_or_create_from_frame(cls, error_frame):
         error_frame = get_error_frame(error_frame)
         file_name = error_frame.f_code.co_filename
         line = linecache.getline(file_name, error_frame.f_lineno).strip()
-        signature = '%s#%s' % (file_name, line)
-        hash_ = sha256(signature).hexdigest()
-        obj, _ = cls.objects.get_or_create(hash=hash_, defaults=dict(file_name=file_name, line=line))
-        return obj
+        hash_ = sha256(cls.make_string(file_name, line)).hexdigest()
+        return cls.objects.get_or_create(hash=hash_, defaults=dict(file_name=file_name, line=line))
 
 
 class ErrorLog(models.Model):
@@ -52,14 +57,16 @@ class ErrorLog(models.Model):
     logged_at = models.DateTimeField(auto_now_add=True)
 
     @classmethod
-    def from_record(cls, record):
-        return cls.objects.create(
+    def create_from_record(cls, record):
+        signature, is_created = Signature.get_or_create_from_frame(record.exc_info[2])
+        log = cls.objects.create(
             type=record.exc_info[0].__name__,
             message=str(record.exc_info[1]),
-            signature=Signature.from_frame(record.exc_info[2]),
-            request=Request.from_request(record.request),
+            signature=signature,
+            request=Request.create_from_request(record.request),
             stack_trace=record.exc_text
         )
+        return log, is_created
 
 
 def get_error_frame(initial_tb):
