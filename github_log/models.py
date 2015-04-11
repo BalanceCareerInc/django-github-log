@@ -82,12 +82,16 @@ class Signature(models.Model):
 
     @classmethod
     def get_or_create_from_frame(cls, error_frame):
-        file_name = error_frame.f_code.co_filename
+        short_file_name = file_name = error_frame.f_code.co_filename
         line_number = error_frame.f_lineno
         line = linecache.getline(file_name, line_number).strip()
-        short_file_name = file_name[len(os.getcwd()):]
+        if not file_name.startswith('.'):
+            short_file_name = file_name[len(os.getcwd()):]
         hash_ = sha256(cls.make_string(short_file_name, line)).hexdigest()
-        return cls.objects.get_or_create(hash=hash_, defaults=dict(file_name=short_file_name, line=line, line_number=line_number))
+        return cls.objects.get_or_create(
+            hash=hash_,
+            defaults=dict(file_name=short_file_name, line=line, line_number=line_number)
+        )
 
 
 class ErrorLog(models.Model):
