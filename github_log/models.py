@@ -131,16 +131,20 @@ Logged at: %(logged_at)s''' % dict(
     @classmethod
     def create_from_record(cls, record):
         error_frame = get_error_frame(record.exc_info[2])
-        signature, is_created = Signature.get_or_create_from_frame(error_frame)
+        signature, _ = Signature.get_or_create_from_frame(error_frame)
+        local_variables = (
+            '%s: %s' % (k, str(v).replace('\n', '\n\t'))
+            for k, v in error_frame.f_locals.iteritems()
+        )
         log = cls.objects.create(
             type=record.exc_info[0].__name__,
             message=str(record.exc_info[1]),
             signature=signature,
             request=Request.create_from_request(record.request),
-            local_variables='\n'.join('%s: %s' % (k, str(v).replace('\n', '\n\t')) for k, v in error_frame.f_locals.iteritems()),
+            local_variables='\n'.join(local_variables),
             stack_trace=record.exc_text
         )
-        return log, is_created
+        return log
 
 
 def get_error_frame(initial_tb):
