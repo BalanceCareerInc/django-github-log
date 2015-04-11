@@ -123,13 +123,13 @@ Local variables
 ## Request Info
 %(request)s
 Logged at: %(logged_at)s''' % dict(
-            filename=self.signature.file_name,
-            line_no=self.signature.line_number,
+            filename=self.signature.file_name.encode('utf8'),
+            line_no=self.signature.line_number.encode('utf8'),
             line=self.signature.line,
-            stack_trace=self.stack_trace,
+            stack_trace=self.stack_trace.encode('utf8'),
             logged_at=self.logged_at,
             local_variables=self.local_variables,
-            request=self.request.to_markdown()
+            request=self.request.to_markdown().encode('utf8')
         )
 
     @classmethod
