@@ -10,7 +10,8 @@ GITHUB_LOG_SETTINGS = {
     'TOKEN': 'GITHUB-API-TOKEN',
     'LABELS': [
         'priority:normal',
-        'status:done',
+        'type:error',
+        ...
     ]
 }
 ```
