@@ -1,5 +1,5 @@
 # django-github-log
-Create an issue on github when django raises error
+Create an issue group by error on github when django raises error
 
 ## Installation
 Add following settings dictionary in your settings.py (LABELS is optional)
