@@ -151,7 +151,7 @@ def get_error_frame(initial_tb):
     def is_controllable(tb):
         filename = tb.tb_frame.f_code.co_filename
         if filename.startswith('.'):
-            filename.replace('.', os.getcwd(), 1)
+            filename = filename.replace('.', os.getcwd(), 1)
         for app_name in settings.INSTALLED_APPS:
             expected_path = os.path.join(os.getcwd(), app_name.replace('.', os.path.sep))
             if os.path.exists(expected_path) and filename.startswith(expected_path):
