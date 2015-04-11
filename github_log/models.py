@@ -157,7 +157,12 @@ def get_error_frame(initial_tb):
         return False
 
     current_tb = initial_tb
-    while current_tb.tb_next and is_controllable(current_tb.tb_next):
+    have_seen_controllable = False
+    while current_tb.tb_next:
+        if is_controllable(current_tb):
+            have_seen_controllable = True
+        if have_seen_controllable and not is_controllable(current_tb.tb_next):
+            break
         current_tb = current_tb.tb_next
 
     return current_tb.tb_frame

@@ -11,7 +11,7 @@ def shoot_to_github(error_log):
     if error_log.signature.issue_number:
         issue = github.issues.get(error_log.signature.issue_number)
         if issue.state != 'open':
-            issue.update(data=dict(status='open'))
+            github.issues.update(issue.number, dict(state='open'))
         github.issues.comments.create(error_log.signature.issue_number, error_log.body)
     else:
         issue = github.issues.create(dict(
