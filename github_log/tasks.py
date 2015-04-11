@@ -14,6 +14,10 @@ def shoot_to_github(error_log):
             issue.update(data=dict(status='open'))
         github.issues.comments.create(error_log.signature.issue_number, error_log.body)
     else:
-        issue = github.issues.create(dict(title=error_log.title, body=error_log.body))
+        issue = github.issues.create(dict(
+            title=error_log.title,
+            body=error_log.body,
+            labels=gitlog_settings.get('LABELS', [])
+        ))
         error_log.signature.issue_number = issue.number
         error_log.signature.save()
