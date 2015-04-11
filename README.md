@@ -14,11 +14,12 @@ GITHUB_LOG_SETTINGS = {
     ]
 }
 ```
-
-And in Logging['handlers'], add
+Add "github_log" in INSTALLED_APPS,
+Add logging handler in settings.Logging['handlers']
 ```python
 'github': {
     'level': 'ERROR',
     'class': 'github_log.log.GitHubIssueHandler'
 },
 ```
+Finally, ``python manage.py syncdb``
