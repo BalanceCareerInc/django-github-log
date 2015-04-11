@@ -5,18 +5,11 @@ from github_log import VERSION
 
 github_url = 'https://github.com/BalanceCareerInc/django-github-log/'
 
-try:
-    from pypandoc import convert
-    read_md = lambda f: convert(f, 'rst')
-except ImportError:
-    print("warning: pypandoc module not found, could not convert Markdown to RST")
-    read_md = lambda f: open(f, 'r').read()
-
 setup(
     name='django-github-log',
     version=VERSION,
     description='Django log handler to create issue on github automatically',
-    long_description=read_md('README.md'),
+    long_description=open('README.rst').read(),
     author='Seungyeon Joshua Kim(Acuros)',
     author_email='acuroskr' '@' 'gmail.com',
     license='MIT License',
