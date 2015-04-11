@@ -14,7 +14,8 @@ GITHUB_LOG_SETTINGS = {
     ]
 }
 ```
-Add "github_log" in INSTALLED_APPS,
+Add "github_log" in INSTALLED_APPS
+
 Add logging handler in settings.Logging['handlers']
 ```python
 'github': {
