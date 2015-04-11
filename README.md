@@ -2,12 +2,16 @@
 Create an issue on github when django raise error
 
 ## Installation
-Add following settings dictionary in your settings.py
+Add following settings dictionary in your settings.py (LABELS is optional)
 ```python
 GITHUB_LOG_SETTINGS = {
     'USER': 'REPOSITORY-OWNER',
     'REPO': 'REPOSITORY-NAME',
-    'TOKEN': 'GITHUB-API-TOKEN'
+    'TOKEN': 'GITHUB-API-TOKEN',
+    'LABELS': [
+        'priority:normal',
+        'status:done',
+    ]
 }
 ```
 
