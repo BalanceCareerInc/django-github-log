@@ -124,7 +124,7 @@ Local variables
 %(request)s
 Logged at: %(logged_at)s''' % dict(
             filename=self.signature.file_name.encode('utf8'),
-            line_no=self.signature.line_number.encode('utf8'),
+            line_no=self.signature.line_number,
             line=self.signature.line,
             stack_trace=self.stack_trace.encode('utf8'),
             logged_at=self.logged_at,
