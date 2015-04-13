@@ -22,7 +22,11 @@ class Request(models.Model):
         request_uri = [self.path]
         get_params = json.loads(self.get_json)
         if get_params:
-            request_uri += ['?', urllib.urlencode(get_params.encode('utf8'))]
+            get_params = dict(
+                (k.encode('utf8'), v.encode('utf8'))
+                for k, v in get_params.iteritems()
+            )
+            request_uri += ['?', urllib.urlencode(get_params)]
         request_uri = ''.join(request_uri)
         return '''
 ### Request: %(method)s %(request_uri)s
