@@ -141,7 +141,7 @@ Logged at: %(logged_at)s''' % dict(
         error_frame = get_error_frame(record.exc_info[2])
         signature, _ = Signature.get_or_create_from_frame(error_frame)
         local_variables = (
-            '%s: %s' % (k, str(v).replace('\n', '\n\t'))
+            '%s: %s' % (k, v.encode('utf8').replace('\n', '\n\t'))
             for k, v in error_frame.f_locals.iteritems()
         )
         log = cls.objects.create(
