@@ -140,10 +140,13 @@ Logged at: %(logged_at)s''' % dict(
     def create_from_record(cls, record):
         error_frame = get_error_frame(record.exc_info[2])
         signature, _ = Signature.get_or_create_from_frame(error_frame)
-        local_variables = (
-            '%s: %s' % (k, v.encode('utf8').replace('\n', '\n\t'))
-            for k, v in error_frame.f_locals.iteritems()
-        )
+        local_variables = []
+        for k, v in error_frame.f_locals.iteritems():
+            if type(v) is unicode:
+                v = v.encode('utf8')
+            else:
+                v = str(v)
+            local_variables.append('%s: %s' % (k, v.replace('\n', '\n\t')))
         log = cls.objects.create(
             type=record.exc_info[0].__name__,
             message=str(record.exc_info[1]),
